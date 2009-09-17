@@ -1,136 +1,126 @@
-from random import *
-import pdb
 import sys
+import random
+import pdb
 
-rows = ['123456789',
-        '123456789',
-        '123456789',
-        '123456789',
-        '123456789',
-        '123456789',
-        '123456789',
-        '123456789',
-        '123456789']
+BOARD_DIMENSIONS = 9
+# [1,2,3,4,5,6,7,8,9]
+VALID_VALUES = range(1, BOARD_DIMENSIONS + 1)
+BLANK_BOARD = [[0 for x in xrange(BOARD_DIMENSIONS)] for y in xrange(BOARD_DIMENSIONS)]
 
-def get_block(x, y):
-    block = ''
+DEBUG=False
+
+class InvalidBoard(Exception):
+    def __init__(self, board):
+        super(InvalidBoard, self).__init__('The board is invalid')
+
+def getBlankBoard():
+    return [[0 for x in xrange(9)] for y in xrange(9)]
     
-    s_x = 3
-    if x <= 2:
-        s_x = 0
-    elif x >= 6:
-        s_x = 6
+def createBoard(availableValues):
+    board = getBlankBoard()
+    for y in xrange(BOARD_DIMENSIONS):
+        for x in xrange(BOARD_DIMENSIONS):
+            unused = getAvailableValues(board, x, y)
+            try:
+                board[y][x] = random.choice(unused)
+            except IndexError:
+                if DEBUG:
+                    print('Invalid board:')
+                    displayBoard(board)
+                raise InvalidBoard(board)
+    return board
 
-    s_y = 3
-    if y <= 2:
-        s_y = 0
-    elif y >= 6:
-        s_y = 6
+def getAvailableValues(board, x, y):
+    available = []
 
-    try :
-        for y in xrange(3):
-            for x in xrange(3):
-                block += rows[y+s_y][x+s_x]
-    except:
-        return block
+    used = []
+
+    row = getRow(board, y)
+    if DEBUG: displayRow(row)
+    for v in row:
+        used.append(v)
+
+    column = getColumn(board, x)
+    if DEBUG: displayColumn(column)
+    for v in column:
+        used.append(v)
+        
+    block = getBlock(board, x, y)
+    if DEBUG: displayBlock(block)
+    for v in block:
+        used.append(v)
+
+    for v in VALID_VALUES:
+        if not v in used:
+            available.append(v)
+
+
+    if DEBUG:
+        print('Available:')
+        displayRow(available)
+    
+    return available
+
+def getRow(board, rowIndex):
+    return board[rowIndex]
+
+def getColumn(board, columnIndex):
+    column = []
+    for row in xrange(BOARD_DIMENSIONS):
+        column.append(board[row][columnIndex])
+        
+    return column
+
+def getBlock(board, rowIndex, columnIndex):
+    startRowIndex = (rowIndex / (BOARD_DIMENSIONS / 3)) * (BOARD_DIMENSIONS / 3)
+    startColumnIndex = (columnIndex / (BOARD_DIMENSIONS / 3)) * (BOARD_DIMENSIONS / 3)
+
+    block = []
+    for y in xrange(startColumnIndex, startColumnIndex + 3):
+        for x in xrange(startRowIndex, startRowIndex + 3):
+            block.append(board[y][x])
 
     return block
 
-def get_column(x, y):
-    column = ''
+def displayBoard(board):
+    for row in board:
+        for column in row:
+            sys.stdout.write(str(column) + ' ')
+        sys.stdout.write('\n')
 
-    try:
-        while y > 0:
-            y -= 1
-            column += rows[y][x]
-    except:
-        return column
+    sys.stdout.write('\n')
 
-    return column
+def displayBlock(block):
+    for i in xrange(9):
+        sys.stdout.write(str(block[i]) + ' ')
+        if (i + 1) % 3 == 0:
+            sys.stdout.write('\n')
 
-def get_row(y):
-    if len(rows) >= y+1:
-        return rows[y]
-    else:
-        rows.append('')
-        return rows[y]
+    sys.stdout.write('\n')
 
-def reset_row(y):
-    rows[y] = ''
+def displayRow(row):
+    for v in row:
+        sys.stdout.write(v)
+        
+    sys.stdout.write('\n\n')
 
-def append_row(y, num):
-    rows[y] += num
+def displayColumn(column):
+    for v in column:
+        print(str(v))
+        
+    sys.stdout.write('\n')
 
-def get_possible(a, b, c):
-    valid = '123456789'
-    p = ''
-
-    for v in valid:
-        if (not v in a) and (not v in b) and (not v in c):
-            p += v
-
-    #print 'p = ' + p + ' (' + a + ',' + b + ',' + c + ')'
-    return p
 
 def generate():
-    x = 0
-    y = 0
-    reset_counter = 0
+    failures = 0
+    while True:
+        try:
+            displayBoard(createBoard(VALID_VALUES))
+            if DEBUG:
+                print(str(failures) + ' failure(s)')
+            break
+        except InvalidBoard:
+            failures += 1
+            pass
 
-    while y < 9:
-        x = 0
-        block = get_block(x, y)
-        column = get_column(x, y)
-        row = get_row(y)
-        
-        while x < 9:
-            p = get_possible(block, column, row)
-            if len(p) == 0:
-                #print 'Resetting!'
-                reset_row(y)
-                x = 0
-                if reset_counter > 10:
-                    y -= 1
-                    reset_row(y)
-                    
-                row = get_row(y)
-                column = get_column(x, y)
-                block = get_block(x, y)
-
-                reset_counter += 1
-                
-                if len(get_possible(block, column, row)) == 0:
-                    print 'Failed twice!'
-                    # give up and start over
-                    rows = []
-                    x = 0
-                    y = 0
-                    break
-            else:
-                append_row(y, p[randint(0, len(p)-1)])
-                x += 1
-                row = get_row(y)
-                column = get_column(x, y)
-                block = get_block(x, y)
-
-        reset_counter = 0
-                
-        y += 1
-
-def display():
-    for y in xrange(0,len(rows)):
-        if y in [3,6]:
-            print '- ' * 11
-        for x in xrange(0, len(rows[y])):
-            if x in [3,6]:
-                print '|',
-            print rows[y][x],
-        print ''
-            
-
-
-
-
-rows = []
 generate()
-display()
