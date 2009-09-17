@@ -1,13 +1,19 @@
-10-12-2008
+This small python script is able to generate a sudoku board
+using a brute force method.
 
-The Sudoku generator is still a prototype and will most like have issues.
-At the moment it uses a brute force method to generate a board.
+Starting in the top left hand corner of the board:
+1. Collect all the values in the current row (horizontal)
+2. Collect all the values in the current column (vertical)
+3. Collect all the values in the current block
+4. Generate a list of all values which don't appear in any
+of the collected values
+5. Place a random available number in the current position
+6. Shift to the next position to the right and repeat steps
+1-5 until all positions are filled.
 
-A way to remove random digits and classify the difficulty of the board is
-still outstanding.
-
-There are also a large number of hardcoded values and few comments, but I
-will update this when I get a chance.
+If the board is not complete, but there are no available values
+for the current position, destroy the board and restart
+with a blank one.
 
 All code is licensed under the lastest GPL
 

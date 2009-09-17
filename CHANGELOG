@@ -1,0 +1,18 @@
+17-09-2009
+
+Got the urge to redo this recently. Only took a few minutes.
+It's a bit neater/better than the previous iteration.
+
+Might work a bit on a brute force solver in the not too distant
+future.
+
+10-12-2008
+
+The Sudoku generator is still a prototype and will most like have issues.
+At the moment it uses a brute force method to generate a board.
+
+A way to remove random digits and classify the difficulty of the board is
+still outstanding.
+
+There are also a large number of hardcoded values and few comments, but I
+will update this when I get a chance.
