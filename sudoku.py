@@ -1,13 +1,17 @@
+#!/usr/bin/python
 import sys
 import random
+import math
 import pdb
 
 BOARD_DIMENSIONS = 9
 # [1,2,3,4,5,6,7,8,9]
 VALID_VALUES = range(1, BOARD_DIMENSIONS + 1)
 BLANK_BOARD = [[0 for x in xrange(BOARD_DIMENSIONS)] for y in xrange(BOARD_DIMENSIONS)]
+EXAMPLE_STRING = '1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1'
 
-DEBUG=False
+
+DEBUG=True
 
 class InvalidBoard(Exception):
     def __init__(self, board):
@@ -51,7 +55,7 @@ def getAvailableValues(board, x, y):
         used.append(v)
 
     for v in VALID_VALUES:
-        if not v in used:
+        if not str(v) in used:
             available.append(v)
 
 
@@ -82,6 +86,36 @@ def getBlock(board, rowIndex, columnIndex):
 
     return block
 
+def stringToBoard(boardString):
+    dimension = math.sqrt(len(boardString))
+    if dimension == int(dimension):
+        board = []
+        index = 0
+        for y in xrange(dimension):
+            row = []
+            for x in xrange(dimension):
+                if not boardString[index] in [0, '.']:
+                    row.append(str(boardString[index]))
+                else:
+                    row.append(0)
+                index += 1
+            board.append(row)
+
+        return board
+
+def solveBoard(board):
+    dimension = len(board)
+    
+    availableMap = []
+    for y in xrange(dimension):
+        for x in xrange(dimension):
+            availableValues = []
+            if board[y][x] in [0, '.']:
+                availableValues = getAvailableValues(board, x, y)
+            availableMap.append(availableValues)
+
+    print(availableMap)
+
 def displayBoard(board):
     for row in board:
         for column in row:
@@ -100,7 +134,7 @@ def displayBlock(block):
 
 def displayRow(row):
     for v in row:
-        sys.stdout.write(v)
+        sys.stdout.write(str(v))
         
     sys.stdout.write('\n\n')
 
@@ -123,4 +157,7 @@ def generate():
             failures += 1
             pass
 
-generate()
+#generate()
+board = stringToBoard(EXAMPLE_STRING)
+displayBoard(board)
+solveBoard(board)
