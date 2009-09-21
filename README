@@ -1,4 +1,4 @@
-This small python script is able to generate a sudoku board
+This small python script is able to generate a complete sudoku board
 using a brute force method.
 
 Starting in the top left hand corner of the board:
@@ -13,7 +13,14 @@ of the collected values
 
 If the board is not complete, but there are no available values
 for the current position, destroy the board and restart
-with a blank one.
+with a blank one. Not a very good use of resources and may be 
+revised at a later date.
+
+The beginnings of a solver are also underway. Instead of going
+the usual route and using a brute force method to solve, I've
+decided to rather attempt something closer to human interaction.
+This will have the added benefit of being able to more accurately
+measure the difficulty of generated boards.
 
 All code is licensed under the latest GPL
 

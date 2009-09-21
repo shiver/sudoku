@@ -1,3 +1,16 @@
+22-09-2009
+
+Decided against the brute force solver in favour of a solver which
+attempts to emulate the methods used by a human.
+
+The trunk is currently able to assign single values and locate
+'Hidden Singles'. As such it is now possible to complete some boards
+classified as easy. Next step is to implement 'Locked Candidates'.
+
+The information and naming for these methods come from 
+http://angusj.com/sudoku/hints.php. This is an excellent resource and
+I recommend it to anyone interested in Sudoku.
+
 17-09-2009
 
 Got the urge to redo this recently. Only took a few minutes.
