@@ -146,7 +146,7 @@ def solveBoard(board):
         availableMap, unassigned = getAvailableMap(board)
         assigned = assignSingles(board, availableMap)
         availableMap, unassigned = getAvailableMap(board)
-        eliminateHiddenSingles(board, availableMap)
+        eliminateHiddenSinglesRows(board, availableMap)
         assigned += assignSingles(board, availableMap)
         availableMap, unassigned = getAvailableMap(board)
 
@@ -196,33 +196,44 @@ def assignSingles(board, availableMap):
 
     return assigned
 
-def eliminateHiddenSingles(board, availableMap):
+def eliminateHiddenSinglesRows(board, availableMap):
     dimension = len(availableMap)
 
     assigned = 0
     for y in xrange(dimension):
-        column = getColumn(availableMap, y)
-        for x in xrange(dimension):
-            # Row
-            row = getRow(availableMap, x)
-            combined = []
-            for r in row:
-                combined.extend(r)
+        # Row
+        row = getRow(availableMap, y)
+        combined = []
+        for r in row:
+            combined.extend(r)
 
-            unique = []
-            for v in VALID_VALUES:
-                if (combined.count(str(v))) == 1:
-                    unique.append(str(v))
+        unique = []
+        for v in VALID_VALUES:
+            if (combined.count(str(v))) == 1:
+                unique.append(str(v))
 
-            for u in unique:
-                for i in xrange(dimension):
-                    if u in row[i]:
-                        row[i] = [u]
+        for u in unique:
+            for i in xrange(dimension):
+                if u in row[i]:
+                    row[i] = [u]
 
-            setRow(availableMap, x, row)
-                
-            block = getBlock(availableMap, x, y)
-            
+        setRow(availableMap, y, row)
+
+def eliminateHiddenSinglesColumns(board, availableMap):
+    dimension = len(availableMap)
+
+    assigned = 0
+    for x in xrange(dimension):
+        # Column
+        column = getColumn(availableMap, x)
+        combined = []
+        for c in column:
+            combined.extend(c)
+
+        unique = []
+        for v in VALID_VALUES:
+            if combined.count(v) == 1:
+                unique.append(v)
 
 def displayBoard(board):
     for row in board:
