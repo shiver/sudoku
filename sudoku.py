@@ -6,7 +6,7 @@ import pdb
 
 BOARD_DIMENSIONS = 9
 # [1,2,3,4,5,6,7,8,9]
-VALID_VALUES = range(1, BOARD_DIMENSIONS + 1)
+VALID_VALUES = [str(i) for i in range(1, BOARD_DIMENSIONS + 1)]
 BLANK_BOARD = [[0 for x in xrange(BOARD_DIMENSIONS)] for y in xrange(BOARD_DIMENSIONS)]
 HARD_STRING = '1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1'
 EASY_STRING = '79....3.......69..8...3..76.....5..2..54187..4..7.....61..9...8..23.......9....54'
@@ -19,7 +19,7 @@ class InvalidBoard(Exception):
         super(InvalidBoard, self).__init__('The board is invalid')
 
 def getBlankBoard():
-    return [[0 for x in xrange(9)] for y in xrange(9)]
+    return [[0 for x in xrange(BOARD_DIMENSIONS)] for y in xrange(BOARD_DIMENSIONS)]
     
 def createBoard(availableValues):
     board = getBlankBoard()
@@ -64,8 +64,8 @@ def getAvailableValues(board, x, y):
         used.append(v)
 
     for v in VALID_VALUES:
-        if not str(v) in used:
-            available.append(str(v))
+        if not v in used:
+            available.append(v)
 
     if DEBUG:
         print('Available:')
@@ -80,14 +80,16 @@ def setRow(board, rowIndex, row):
     board[rowIndex] = row
 
 def getColumn(board, columnIndex):
+    dimension = len(board)
     column = []
-    for rowIndex in xrange(BOARD_DIMENSIONS):
+    for rowIndex in xrange(dimension):
         column.append(board[rowIndex][columnIndex])
         
     return column
 
 def setColumn(board, columnIndex, column):
-    for rowIndex in xrange(BOARD_DIMENSIONS):
+    dimension = len(board)
+    for rowIndex in xrange(dimension):
         board[rowIndex][columnIndex] = column[rowIndex]
 
     return board
@@ -210,9 +212,9 @@ def eliminateHiddenSingles(board, availableMap):
                 combined.extend(r)
 
             unique = []
-            for v in VALID_VALUES:
-                if (combined.count(str(v))) == 1:
-                    unique.append(str(v))
+            for v in set(combined):
+                if (combined.count(v)) == 1:
+                    unique.append(v)
 
             for u in unique:
                 for i in xrange(dimension):
@@ -223,7 +225,6 @@ def eliminateHiddenSingles(board, availableMap):
                 
             block = getBlock(availableMap, x, y)
             
-
 def displayBoard(board):
     for row in board:
         for column in row:
