@@ -8,7 +8,8 @@ BOARD_DIMENSIONS = 9
 # [1,2,3,4,5,6,7,8,9]
 VALID_VALUES = [str(i) for i in range(1, BOARD_DIMENSIONS + 1)]
 BLANK_BOARD = [[0 for x in xrange(BOARD_DIMENSIONS)] for y in xrange(BOARD_DIMENSIONS)]
-HARD_STRING = '1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1'
+IMPOSSIBLE_STRING = '1.......2.9.4...5...6...7...5.9.3.......7.......85..4.7.....6...3...9.8...2.....1'
+HARD_STRING = '6.5..2..8...1...7..9.5..6....2736.8....485....3.9217....4..3.9..5...4...3..8..1.2'
 EASY_STRING = '79....3.......69..8...3..76.....5..2..54187..4..7.....61..9...8..23.......9....54'
 
 
@@ -139,6 +140,24 @@ def stringToBoard(boardString):
 
         return board
 
+def boardToSS(board):
+    """Converts a board to Simple Sudoku format"""
+
+    dimension = len(board)
+
+    ss = ''
+    for y in xrange(dimension):
+        for x in xrange(dimension):
+            if board[y][x] in [0, '.']:
+                ss += 'X'
+            else:
+                ss += board[y][x]
+        ss += '\n'
+
+    ss += '\n'
+
+    return ss
+
 def solveBoard(board):
     unassigned = -1
     while unassigned != 0:
@@ -146,11 +165,23 @@ def solveBoard(board):
             unassigned = 0
             
         availableMap, unassigned = getAvailableMap(board)
-        assigned = assignSingles(board, availableMap)
+        assigned = assignNakedSingles(board, availableMap)
         availableMap, unassigned = getAvailableMap(board)
         eliminateHiddenSinglesRows(board, availableMap)
-        assigned += assignSingles(board, availableMap)
+        assigned += assignNakedSingles(board, availableMap)
         availableMap, unassigned = getAvailableMap(board)
+        eliminateHiddenSinglesColumns(board, availableMap)
+        assigned += assignNakedSingles(board, availableMap)
+        availableMap, unassigned = getAvailableMap(board)
+        eliminateHiddenSinglesBlocks(board, availableMap)
+        assigned += assignNakedSingles(board, availableMap)
+        availableMap, unassigned = getAvailableMap(board)
+        eliminateNakedPairsRows(board, availableMap)
+        assigned += assignNakedSingles(board, availableMap)
+        availableMap, unassigned = getAvailableMap(board)
+
+
+
 
         print(str(assigned) + ' assigned\n')
         if assigned == 0:
@@ -179,7 +210,7 @@ def getAvailableMap(board):
     return availableMap, unassigned
 
 
-def assignSingles(board, availableMap):
+def assignNakedSingles(board, availableMap):
     dimension = len(board)
 
     assigned = 0
@@ -236,6 +267,71 @@ def eliminateHiddenSinglesColumns(board, availableMap):
         for v in VALID_VALUES:
             if combined.count(v) == 1:
                 unique.append(v)
+        
+        for u in unique:
+            for i in xrange(dimension):
+                if u in column[i]:
+                    column[i] = [u]
+
+        setColumn(availableMap, x, column)
+
+def eliminateHiddenSinglesBlocks(board, availableMap):
+    dimension = len(availableMap)
+
+    assigned = 0
+    checked_blocks = {}
+    for y in xrange(dimension):
+        for x in xrange(dimension):
+            # Block
+            startRowIndex, startColumnIndex = getBlockStart(board, x, y)
+            key = str(startRowIndex) + ',' + str(startColumnIndex)
+            if not checked_blocks.has_key(key):
+                checked_blocks[key] = 1
+
+                block = getBlock(availableMap, startRowIndex, startColumnIndex)
+                combined = []
+                for b in block:
+                    combined.extend(b)
+
+                unique = []
+                for v in VALID_VALUES:
+                    if combined.count(v) == 1:
+                        unique.append(v)
+
+                for u in unique:
+                    for i in xrange(dimension):
+                        if u in block[i]:
+                            block[i] = [u]
+
+                setBlock(availableMap, x, y, block)
+
+def eliminateNakedPairsRows(board, availableMap):
+    dimension = len(board)
+
+    for y in xrange(dimension):
+       row = getRow(availableMap, y)
+       pairs = []
+       for r in row:
+           if len(r) == 2:
+               pairs.append(r)
+
+       for p in pairs:
+           if row.count(p) == 2:
+                pass
+
+def eliminateNakedPairsColumns(board, availableMap):
+    dimension = len(board)
+
+    for x in xrange(dimension):
+       column = getColumn(availableMap, x)
+       pairs = []
+       for r in row:
+           if len(r) == 2:
+               pairs.append(r)
+
+       for p in pairs:
+           if row.count(p) == 2:
+               pass
 
 def displayBoard(board):
     for row in board:
@@ -279,7 +375,9 @@ def generate():
             pass
 
 #generate()
-board = stringToBoard(EASY_STRING)
+board = stringToBoard(HARD_STRING)
 displayBoard(board)
 solveBoard(board)
 displayBoard(board)
+
+
