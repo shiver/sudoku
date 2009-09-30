@@ -179,7 +179,9 @@ def solveBoard(board):
         eliminateNakedPairsRows(board, availableMap)
         assigned += assignNakedSingles(board, availableMap)
         availableMap, unassigned = getAvailableMap(board)
-
+        eliminateNakedPairsColumns(board, availableMap)
+        assigned += assignNakedSingles(board, availableMap)
+        availableMap, unassigned = getAvailableMap(board)
 
 
 
@@ -325,13 +327,16 @@ def eliminateNakedPairsColumns(board, availableMap):
     for x in xrange(dimension):
        column = getColumn(availableMap, x)
        pairs = []
-       for r in row:
-           if len(r) == 2:
-               pairs.append(r)
+       for c in column:
+           if len(c) == 2 and column.count(c) == 2 \
+              and pairs.count(c) == 0:
+               pairs.append(c)
 
-       for p in pairs:
-           if row.count(p) == 2:
-               pass
+       for p in set(pairs):
+           for c in column:
+               if not c == p:
+
+
 
 def displayBoard(board):
     for row in board:
