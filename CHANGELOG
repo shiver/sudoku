@@ -1,3 +1,14 @@
+07-10-2009
+
+Sadly I haven't had much in the way of spare time recently.
+I decided that what time I did have was better spent reworking
+the code into something with a little more structure. 
+
+The single file script was becoming a little unwieldy and this change should
+make life somewhat easier.
+
+Hopefully I'll get a chance to work on new features soon.
+
 22-09-2009
 
 Decided against the brute force solver in favour of a solver which
