@@ -1,10 +1,10 @@
 '''
 Created on 1/10/2009
 
-@author: shiver
+@author: Rob
 '''
 
-from board.availablemap import AvailableMap
+from board.AvailableMap import AvailableMap
 
 import logging
 

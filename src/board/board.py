@@ -1,10 +1,10 @@
 '''
 Created on 30/09/2009
 
-@author: shiver
+@author: Rob
 '''
 
-from boardutils import *
+from BoardUtils import *
 
 import logging
 import random
@@ -23,13 +23,23 @@ class Board(object):
         self._logger = logging.getLogger('Board')
         self._dimensions = dimensions
         self._validValues = [str(i) for i in range(1, self._dimensions + 1)]
-                
+
         if board is None:
-            self._board = self.clear()
+            self.clear()
         else:
-            self._board = board.getBoard()
+            self._board = board._getUniqueBoard()
+        
+    def _getUniqueBoard(self):
+        """Returns a unique board which is used for copying the values from an already existing board"""
+        newBoard = []
+        for i in xrange(self.getDimensions()):
+            newBoard.append(list(self._board[i]))
+            
+        return newBoard
+            
 
     def getBoard(self):
+        """Returns the internal board which contains the currently set values"""
         return self._board
 
     def clear(self):
@@ -61,26 +71,47 @@ class Board(object):
                     raise InvalidBoard(self._board)
 
     def setPosition(self, x, y, value):
-        self._board[y][x] = value
+        """Sets the value of the board at the specified position
         
+        @param x: The 0 based index of the column
+        @param y: The 0 based index of the row
+        @param value: The value to set
+        """
+        self._board[y][x] = value
+
     def getPosition(self, x, y):
+        """Returns the value at the specified position
+        
+        @param x:
+        @param y:
+        """
         return self._board[y][x]
-    
+
     def getDimensions(self):
+        """Returns the dimensions of the current board"""
         return self._dimensions
-    
+
     def getRow(self, y):
         """Returns a list containing the values found at the specified index
         
-        @param rowIndex: The 0 based index of the row to fetch 
+        @param y: The 0 based index of the row to fetch 
         """
 
         return self._board[y]
 
     def setRow(self, y, row):
+        """Overwrites the row at the specified index
+        
+        @param y: The 0 based index of the row to overwrite
+        @param row: A list containing the values to set
+        """
         self._board[y] = row
 
     def getColumn(self, x):
+        """Returns a list containing the values found at the specified index
+        
+        @param x: The 0 based index of the column to fetch
+        """
         column = []
         for yIndex in xrange(self._dimensions):
             column.append(self._board[yIndex][x])
@@ -88,10 +119,23 @@ class Board(object):
         return column
 
     def setColumn(self, x, column):
+        """Overwrites the column at the specified index
+        
+        @param x: The 0 based index of the column to overwrite
+        @param column: A list containing the values to set
+        """
         for yIndex in xrange(self._dimensions):
             self.__board[yIndex][x] = column[yIndex]
 
     def getBlock(self, x, y):
+        """Returns a list containing the values found in a block
+        which the specified location falls in. 
+        
+        @param x: The 0 based index of a position which falls 
+        within the required block
+        @param y: The 0 based index of a position which falls
+        within the required block
+        """
         startX, startY = self.getBlockStart(x, y)
 
         block = []
@@ -102,6 +146,15 @@ class Board(object):
         return block
 
     def setBlock(self, x, y, block):
+        """Overwrites a block found at the specified location
+        
+        @param x: the 0 based index of a position which falls
+        within the required block
+        @param y: the 0 based index of a position which falls
+        within the required block
+        @param block: a list containing the values with which
+        the block will be overwritten
+        """
         startX, startY = self.getBlockStart(x, y)
 
         index = 0
@@ -111,12 +164,18 @@ class Board(object):
                 index += 1
 
     def getBlockStart(self, x, y):
+        """Retrieves a tuple containing starting location
+        of a block which contains the supplied position.
+        """
         startX = (x / (self._dimensions / 3)) * (self._dimensions / 3)
         startY = (y / (self._dimensions / 3)) * (self._dimensions / 3)
 
         return startX, startY
 
     def getAvailableValues(self, x, y):
+        """Determines the values that are valid for the specified
+        location
+        """
         self._logger.debug('(' + str(x) + ', ' + str(y) + ')')
 
         available = []
@@ -129,7 +188,7 @@ class Board(object):
         for v in row:
             used.append(v)
 
-        column = self.getColumn(x)  
+        column = self.getColumn(x)
         self._logger.debug('Column:')
         self._logger.debug(columnToString(column))
         for v in column:
@@ -151,6 +210,8 @@ class Board(object):
         return available
 
     def boardFromString(self, boardString):
+        """Sets the board using the values found in the string"""
+
         dimensions = math.sqrt(len(boardString))
         if dimensions == int(dimensions):
             dimensions = int(dimensions)
@@ -162,9 +223,9 @@ class Board(object):
                     if not boardString[index] in [0, '.']:
                         row.append(str(boardString[index]))
                     else:
-                        row.append(0)
+                        row.append(self.EMPTY_VALUE)
                     index += 1
                 board.append(row)
 
             self._board = board
-
+            

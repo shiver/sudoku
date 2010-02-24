@@ -3,12 +3,12 @@
 '''
 Created on 1/10/2009
 
-@author: shiver
+@author: Rob
 '''
 
-from board.board import Board
-from solver.easysolver import EasySolver
-from board.boardutils import *
+from Board.Board import Board
+from Solver.EasySolver import EasySolver
+from Board.BoardUtils import *
 
 import logging
 
@@ -22,23 +22,26 @@ logging.basicConfig(level=logging.INFO)
 board = Board()
 board.boardFromString(HARD_STRING)
 logger.info('\n' + boardToString(board))
-solver = EasySolver(board)
+easySolver = EasySolver(board)
 
 assigned = -1
 while assigned != 0:
-    if solver.getAvailableMap().getUnassigned() == 0:
+    if easySolver.getAvailableMap().getUnassigned() == 0:
         break
     
     assigned = 0
     assignedNakedSingles = 0
     assignedHiddenSingles = 0
         
-    assignedNakedSingles += solver.assignNakedSingles()
+    assignedNakedSingles += easySolver.assignNakedSingles()
     logger.info('Found ' + str(assignedNakedSingles) + ' naked singles')
-    assignedHiddenSingles = solver.assignHiddenSingles()
+    assignedHiddenSingles = easySolver.assignHiddenSingles()
     logger.info('Found ' + str(assignedNakedSingles) + ' hidden singles')
+    assignedLockedCandidates1 = easySolver.assignLockedCandidates1()
+    logger.info('Found ' + str(assignedLockedCandidates1) + ' locked candidates')
     
     assigned += assignedNakedSingles
     assigned += assignedHiddenSingles
+    assigned += assignedLockedCandidates1
     
-logger.info('\n' + boardToString(solver.getBoard()))
+logger.info('\n' + boardToString(easySolver.getBoard()))
