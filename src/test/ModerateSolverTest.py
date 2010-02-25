@@ -35,7 +35,8 @@ class Test(unittest.TestCase):
 
     def testFindLockedCandidates1(self):
         board = Board()
-        board.boardFromString(simpleSudokuClipboardToString(self.LOCKED_CANDIDATES1_1))
+        board.boardFromString(
+                simpleSudokuClipboardToString(self.LOCKED_CANDIDATES1_1))
         solver = ModerateSolver(board)
         availableMap = solver.getAvailableMap()
         
