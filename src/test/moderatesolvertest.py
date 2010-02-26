@@ -8,7 +8,7 @@ from solver.easysolver import EasySolver
 from board.board import Board
 from board.boardutils import boardToSimpleSudokuClipboard,\
     simpleSudokuClipboardToString
-from solver.moderateSolver import ModerateSolver
+from solver.moderatesolver import ModerateSolver
 from board.htmlboard import HTMLBoard
 
 import unittest
