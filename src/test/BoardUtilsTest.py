@@ -4,8 +4,8 @@ Created on 24/02/2010
 @author: Rob
 '''
 
-from board.Board import Board
-from board.BoardUtils import * 
+from board.board import Board
+from board.boardutils import * 
 
 import unittest
 

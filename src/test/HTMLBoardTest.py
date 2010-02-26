@@ -3,9 +3,9 @@ Created on 25/02/2010
 
 @author: Rob
 '''
-from board.Board import Board
-from board.AvailableMap import AvailableMap
-from board.HTMLBoard import HTMLBoard
+from board.board import Board
+from board.availablemap import AvailableMap
+from board.htmlboard import HTMLBoard
 
 import unittest
 

@@ -4,8 +4,8 @@ Created on 8/10/2009
 @author: Rob
 '''
 
-from Solver import Solver
-from FoundUtils import *
+from solver import Solver
+from foundutils import *
 
 import logging
 

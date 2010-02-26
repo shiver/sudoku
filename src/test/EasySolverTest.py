@@ -4,8 +4,8 @@ Created on 17/02/2010
 @author: Rob
 '''
 
-from solver.EasySolver import EasySolver
-from board.Board import Board
+from solver.easysolver import EasySolver
+from board.board import Board
 
 import unittest
 

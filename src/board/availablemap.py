@@ -4,7 +4,7 @@ Created on 1/10/2009
 @author: Rob
 '''
 
-from Board import Board
+from board import Board
 
 import logging
 

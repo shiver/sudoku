@@ -4,7 +4,7 @@ Created on 1/10/2009
 @author: Rob
 '''
 
-from board.AvailableMap import AvailableMap
+from board.availablemap import AvailableMap
 
 import logging
 

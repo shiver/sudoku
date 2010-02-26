@@ -4,8 +4,8 @@ Created on 25/02/2010
 @author: Rob
 '''
 
-from Board import Board
-from AvailableMap import AvailableMap
+from board import Board
+from availablemap import AvailableMap
 
 from types import ListType
 from string import Template

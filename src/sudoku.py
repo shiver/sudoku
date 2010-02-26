@@ -6,9 +6,9 @@ Created on 1/10/2009
 @author: Rob
 '''
 
-from Board.Board import Board
-from Solver.EasySolver import EasySolver
-from Board.BoardUtils import *
+from board.board import Board
+from solver.easysolver import EasySolver
+from board.boardutils import *
 
 import logging
 

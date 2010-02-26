@@ -4,12 +4,12 @@ Created on 18/02/2010
 @author: Rob
 '''
 
-from solver.EasySolver import EasySolver
-from board.Board import Board
-from board.BoardUtils import boardToSimpleSudokuClipboard,\
+from solver.easysolver import EasySolver
+from board.board import Board
+from board.boardutils import boardToSimpleSudokuClipboard,\
     simpleSudokuClipboardToString
-from solver.ModerateSolver import ModerateSolver
-from board.HTMLBoard import HTMLBoard
+from solver.moderateSolver import ModerateSolver
+from board.htmlboard import HTMLBoard
 
 import unittest
 

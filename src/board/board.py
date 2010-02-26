@@ -4,7 +4,7 @@ Created on 30/09/2009
 @author: Rob
 '''
 
-from BoardUtils import *
+from boardutils import *
 
 import logging
 import random
