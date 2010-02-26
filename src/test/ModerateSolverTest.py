@@ -9,6 +9,7 @@ from board.Board import Board
 from board.BoardUtils import boardToSimpleSudokuClipboard,\
     simpleSudokuClipboardToString
 from solver.ModerateSolver import ModerateSolver
+from board.HTMLBoard import HTMLBoard
 
 import unittest
 
@@ -29,6 +30,7 @@ class Test(unittest.TestCase):
              |...|...|...|
              *-----------*
             """
+        self.OUT_PATH = None
 
     def tearDown(self):
         pass
@@ -46,6 +48,10 @@ class Test(unittest.TestCase):
         assert('5' in availableMap.getPosition(0, 4))
         assert('5' in availableMap.getPosition(2, 4))
         
+        htmlBoard = HTMLBoard(solver.getBoard(), solver.getAvailableMap())
+        assert(htmlBoard.write(self.OUT_PATH + 'locked_candidates1_before.html', 
+                               forceOverwrite=True))
+        
         solver.assignLockedCandidates1()
         
         # Make sure the excluded values are no longer returned
@@ -53,6 +59,9 @@ class Test(unittest.TestCase):
         assert(not ('2' in availableMap.getPosition(7, 3)))
         assert(not ('5' in availableMap.getPosition(0, 4)))
         assert(not ('5' in availableMap.getPosition(2, 4)))
+        
+        assert(htmlBoard.write(self.OUT_PATH + 'locked_candidates1_after.html', 
+                               forceOverwrite=True))
                        
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

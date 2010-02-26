@@ -9,6 +9,7 @@ from AvailableMap import AvailableMap
 
 from types import ListType
 from string import Template
+import os
 
 class HTMLBoard(Board):
     """The HTMLBoard class' main goal is to provide assistance during debugging.
@@ -16,9 +17,12 @@ class HTMLBoard(Board):
     AvailableMap makes it far easier to test new functionality and fix bugs.
     """
     
-    def __init__(self, board):
+    def __init__(self, board, availableMap=None):
         super(HTMLBoard, self).__init__(board)
-        self._availableMap = AvailableMap(board)
+        if availableMap is None:
+            self._availableMap = AvailableMap(board)
+        else:
+            self._availableMap = availableMap
         
     def _createCell(self, value):
         """Creates and returns an HTML element using the supplied values.
@@ -114,11 +118,11 @@ class HTMLBoard(Board):
         cellString += """</div>"""
         return cellString
          
-    def getHTML(self, include_available_map=True):
+    def getHTML(self, includeAvailableMap=True):
         """Returns a HTML string representation of a combined Board and 
         AvailableMap.
         
-        include_available_map - If False, will only generate Board values
+        includeAvailableMap - If False, will only generate Board values
         """
          
         htmlString = """<style type="text/css">
@@ -142,10 +146,30 @@ class HTMLBoard(Board):
         for y in xrange(self.getDimensions()):
             for x in xrange(self.getDimensions()):
                 value = self.getPosition(x, y)
-                if value is Board.EMPTY_VALUE and include_available_map:
+                if value is Board.EMPTY_VALUE and includeAvailableMap:
                     value = self._availableMap.getPosition(x, y)
                 htmlString += self._createCell(value)
             
             htmlString += """<div style="clear:both"></div>"""
                 
-        print(htmlString)
+        return htmlString
+    
+    def write(self, filename, includeAvailableMap=True, forceOverwrite=False):
+        """Writes an HTML representation of a Board to the specified file.
+        
+        filename - full path location of the file to be created.
+        includeAvailableMap - If False, will only generate Board values.
+        forceOverwrite - If the specified file already exists, will attempt to
+                        overwrite it.
+                        
+        Returns True if the file was successfully written.
+        """
+        
+        if os.path.exists(filename) and not forceOverwrite:
+            return False
+        
+        with open(filename, 'w') as file:
+            file.write(self.getHTML(includeAvailableMap))
+            
+        return True
+            
