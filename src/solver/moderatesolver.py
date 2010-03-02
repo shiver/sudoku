@@ -43,22 +43,17 @@ class ModerateSolver(Solver):
                         if len(foundInBlock) > 0:
                             # Check if all instances of the value fall in the
                             # same row. 
-                            rowIndex = self._getLockedRow(foundInBlock)
-                            if not rowIndex is None:
-                                # Found locked candidates.
-                                row = availableMap.getRow(rowIndex)
-                                # Remove all 'other' instances of the value
-                                # from row and replace the original in the
-                                # availableMap.
-                                #subtractFound(row, foundInBlock)
+                            result = self._getLocked(foundInBlock)
+                            if not result is None:
+                                # Found locked candidates. 
                                 lockedCandidate = LockedCandidate()
                                 lockedCandidate.blockStart = (startX, startY)
-                                lockedCandidate.type = 0
-                                lockedCandidate.index = rowIndex
+                                lockedCandidate.type = result['type']
+                                lockedCandidate.index = result['index']
                                 lockedCandidate.value = value
                                 
                                 lockedCandidates.append(lockedCandidate)
-                                availableMap.setRow(rowIndex, row)
+                                ##availableMap.setRow(index, row)
 
         self._logger.debug(str(lockedCandidates) +
                            ' locked candidates found')
@@ -86,32 +81,56 @@ class ModerateSolver(Solver):
                             availableMap.addExclusion(x, locked.index, 
                                                       locked.value)
                             excluded += 1
-        
+            if locked.type == LockedCandidate.COLUMN:
+                for y in xrange(self.getBoard().getDimensions()):
+                    if not (self.getBoard().getBlockStart(locked.index, y) == 
+                        locked.blockStart):
+                        # We only exclude values which fall outside the 
+                        # originating block
+                        if locked.value in availableMap.getAvailableValues(
+                                                locked.index, y):
+                            availableMap.addExclusion(locked.index, y, 
+                                                      locked.value)
+                            excluded += 1
         self.getAvailableMap().calculate()
         return excluded
 
-    def _getLockedRow(self, values):
-        """
-        Checks the position of each value and determines
-        if they all fall in the same row.
+    def _getLocked(self, values):
+        """Checks the position of each value and determines
+        if they all fall in the same row or column.
         
-        @returns: index of the row which the values fall in
+        @returns: index of the row or column which the values fall in
         if they are locked. Otherwise None
         """
 
-        prev = None
-        for key in values.iterkeys():
-            if prev is None:
-                # Take record of the first row index we come across
-                prev = key[1]
+        # To be locked we should only have 3 or fewer values to check
+        if len(values) > 3:
+            return None
+        
+        columns = {}
+        rows = {}
+        
+        for column, row in values.iterkeys():
+            if columns.has_key(column):
+                columns[column] += 1
             else:
-                # Make sure that all subsequent rows match
-                if not key[1] == prev:
-                    return None
-
-        # We only get here if all the rows matched 
-        return prev
-    
+                columns[column] = 1
+                
+            if rows.has_key(row):
+                rows[row] += 1
+            else:
+                rows[row] = 1
+                
+        for key, value in columns.iteritems():
+            if value == len(values):
+                return dict(index=key, type=LockedCandidate.COLUMN)
+            
+        for key, value in rows.iteritems():
+            if value == len(values):
+                return dict(index=key, type=LockedCandidate.ROW)
+        
+        return None
+        
 class LockedCandidate(object):
     """A class used to store information about locked candidates.
     """
