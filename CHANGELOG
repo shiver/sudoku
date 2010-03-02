@@ -1,3 +1,9 @@
+03-03-2010
+
+Implemented a solver for candidates locked to a single column or row in a 
+block. This has actually been in the code base for some time, though it was
+buggy and partially complete. It should be better now :)
+
 07-10-2009
 
 Sadly I haven't had much in the way of spare time recently.

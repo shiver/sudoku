@@ -53,7 +53,6 @@ class ModerateSolver(Solver):
                                 lockedCandidate.value = value
                                 
                                 lockedCandidates.append(lockedCandidate)
-                                ##availableMap.setRow(index, row)
 
         self._logger.debug(str(lockedCandidates) +
                            ' locked candidates found')
@@ -110,6 +109,7 @@ class ModerateSolver(Solver):
         columns = {}
         rows = {}
         
+        # Record number of times we come across each column and row index
         for column, row in values.iterkeys():
             if columns.has_key(column):
                 columns[column] += 1
@@ -121,6 +121,9 @@ class ModerateSolver(Solver):
             else:
                 rows[row] = 1
                 
+        # If the number of times either a column or row index appears matches
+        # the number of total values we were given, then we have a locked 
+        # candidate.
         for key, value in columns.iteritems():
             if value == len(values):
                 return dict(index=key, type=LockedCandidate.COLUMN)

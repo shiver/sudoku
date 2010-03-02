@@ -45,7 +45,7 @@ class Test(unittest.TestCase):
              |...|..5|...|
              *-----------*"""
             
-        self.OUT_PATH = 'c:\\users\\rob\\projects\\sudoku\\debug\\'
+        self.OUT_PATH = ''
 
     def tearDown(self):
         pass
